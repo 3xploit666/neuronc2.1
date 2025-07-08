@@ -4,17 +4,17 @@
   <img src="assets/logo.png" alt="NeuronC2 Logo" width="600">
 </p>
 <p align="center">
-  <strong>Framework Avanzado de Comando y Control potenciado por el Protocolo de Contexto de Modelo</strong>
+  <strong>Advanced Command and Control Framework powered by Model Context Protocol</strong>
 </p>
 
 <p align="center">
-  <a href="#características">Características</a> •
-  <a href="#arquitectura">Arquitectura</a> •
-  <a href="#instalación">Instalación</a> •
-  <a href="#uso">Uso</a> •
+  <a href="#features">Features</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
   <a href="#api">API</a> •
-  <a href="#seguridad">Seguridad</a> •
-  <a href="#contribuciones">Contribuciones</a>
+  <a href="#security">Security</a> •
+  <a href="#contributing">Contributing</a>
 </p>
 
 <p align="center">
@@ -25,83 +25,78 @@
 
 ---
 
-## 🚀 Características
+## Features
 
-- **🔌 Integración con Protocolo de Contexto de Modelo (MCP)**: Control fluido de agentes a través de interfaces de IA
-- **🔐 Autenticación Segura**: Despliegue basado en tokens y autenticación con claves API
-- **💾 Base de Datos SQLite**: Almacenamiento persistente para agentes, comandos y tokens de despliegue
-- **🖥️ Windows**: Actualmente solo compatible con agentes Windows
-- **📸 Captura de Pantalla**: Captura remota de pantalla con redimensionamiento automático
-- **📊 Información del Sistema**: Recopilación completa de información del sistema
-- **🔄 Comunicación WebSocket**: Comunicación bidireccional en tiempo real
-- **📝 Historial de Comandos**: Registro completo de todos los comandos ejecutados
-- **🛡️ Gestión de Tokens**: Control granular sobre tokens de despliegue
+- **Model Context Protocol (MCP) Integration**: Seamless agent control through AI interfaces
+- **Secure Authentication**: Token-based deployment and API key authentication
+- **SQLite Database**: Persistent storage for agents, commands, and deployment tokens
+- **Windows Support**: Currently supports Windows agents exclusively
+- **System Information**: Comprehensive system information gathering
+- **WebSocket Communication**: Real-time bidirectional communication
+- **Command History**: Complete logging of all executed commands
+- **Token Management**: Granular control over deployment tokens
 
-## 🏗️ Arquitectura
+## Architecture
 
 ```mermaid
 graph TD
-    A[Cliente MCP] -->|Protocolo MCP| B[Servidor NeuronC2]
-    B -->|HTTP/WebSocket| C[Agente]
-    B -->|SQLite| D[Base de Datos]
+    A[MCP Client] -->|MCP Protocol| B[NeuronC2 Server]
+    B -->|HTTP/WebSocket| C[Agent]
+    B -->|SQLite| D[Database]
     
-    subgraph "Servidor NeuronC2"
-        B1[Manejador MCP]
-        B2[Servidor HTTP]
-        B3[Gestor WebSocket]
-        B4[Gestor Base de Datos]
+    subgraph "NeuronC2 Server"
+        B1[MCP Handler]
+        B2[HTTP Server]
+        B3[WebSocket Manager]
+        B4[Database Manager]
     end
     
-    subgraph "Estructura del Proyecto"
-        E1[cmd/neuronc2] -->|Principal| B
-        E2[internal] -->|Implementaciones| B
-        E3[pkg/models] -->|Modelos Exportables| B
-        E4[client] -->|Cliente y Herramientas| A
-        E5[config] -->|Configuración| B
+    subgraph "Project Structure"
+        E1[cmd/neuronc2] -->|Main| B
+        E2[internal] -->|Implementations| B
+        E3[pkg/models] -->|Exportable Models| B
+        E4[client] -->|Client & Tools| A
+        E5[config] -->|Configuration| B
     end
     
-    subgraph "Agente"
-        C1[Módulo de Activación]
-        C2[Ejecutor de Comandos]
-        C3[Módulo de Capturas]
-        C4[Recolector de Info]
+    subgraph "Agent"
+        C1[Activation Module]
+        C2[Command Executor]
+        C4[Info Collector]
     end
 ```
 
-## 📦 Estructura del Proyecto
+## Project Structure
 
 ```
 neuronc2/
-├── assets/               # Recursos estáticos (logos, imágenes)
-├── client/               # Cliente y herramientas de despliegue
-│   ├── client.go         # Implementación del cliente
-│   ├── deploy.bat        # Script de despliegue para Windows
-│   └── deploy.sh         # Script de despliegue para Linux
+├── assets/               # Static resources (logos, images)
+├── client/               # Client and deployment tools
+│   ├── client.go         # Client implementation
+│   └── deploy.bat        # Windows deployment script
 ├── cmd/
-│   └── neuronc2/         # Punto de entrada principal
-│       ├── main.go       # Archivo principal
-│       └── c2_database.db # Base de datos SQLite
+│   └── neuronc2/         # Main entry point
+│       ├── main.go       # Main file
+│       └── c2_database.db # SQLite database
 ├── config/
-│   └── config.go         # Configuración del proyecto
-├── internal/             # Implementaciones internas
-│   ├── agent/            # Lógica del agente
-│   ├── auth/             # Autenticación
-│   ├── database/         # Capa de acceso a datos
-│   ├── mcptools/         # Herramientas MCP
-│   ├── server/           # Implementación del servidor
-│   └── utils/            # Utilidades
+│   └── config.go         # Project configuration
+├── internal/             # Internal implementations
+│   ├── agent/            # Agent logic
+│   ├── auth/             # Authentication
+│   ├── database/         # Data access layer
+│   ├── mcptools/         # MCP tools
+│   ├── server/           # Server implementation
+│   └── utils/            # Utilities
 ├── pkg/
-│   └── models/           # Modelos de datos exportables
-├── example/              # Ejemplos de uso
-├── go.mod                # Dependencias del proyecto
-├── go.sum                # Checksums de dependencias
-├── install.sh            # Script de instalación
-└── README.md             # Documentación
+│   └── models/           # Exportable data models
+├── example/              # Usage examples
+├── go.mod                # Project dependencies
+└── go.sum                # Dependency checksums
 ```
 
-### Configuración del MCP
+### MCP Configuration
 
-Crea un archivo de configuración para el MCP (por ejemplo `claude-desktop.json`):
+Create an MCP configuration file (e.g., `claude-desktop.json`):
 
 ```json
 {
@@ -113,131 +108,121 @@ Crea un archivo de configuración para el MCP (por ejemplo `claude-desktop.json`
 }
 ```
 
-Reemplaza `"insert you path binary c2"` con la ruta completa al binario del servidor C2.
+Replace `"insert you path binary c2"` with the full path to the C2 server binary.
 
-## 📋 Requisitos
+## Requirements
 
-- Go 1.24 o superior
+- Go 1.24 or higher
 - SQLite3
-- Para agentes Windows: PowerShell
-- Para la funcionalidad de capturas de pantalla: `github.com/kbinani/screenshot`
+- PowerShell
 
-## 🛠️ Instalación
+## Installation
 
-### Configuración del Servidor
+### Server Setup
 
-1. Clonar el repositorio:
+1. Clone the repository:
 ```bash
-git clone https://github.com/tuusuario/neuronc2.git
+git clone https://github.com/3xploit666/neuronc2.1.git
 cd neuronc2
 ```
 
-2. Instalar dependencias:
+2. Install dependencies:
 ```bash
 go mod download
 ```
 
-3. Compilar el servidor:
+3. Build the server:
 ```bash
-go build -o neuronc2 ./cmd/neuronc2/main.go
+go build -o neuronc2.1 ./cmd/neuronc2.1/main.go
 ```
 
-4. Ejecutar el servidor:
+4. Run the server:
 ```bash
-./neuronc2
+./neuronc2.1
 ```
 
-El servidor se iniciará en:
-- HTTP: `:8080` (para comunicación con agentes)
-- MCP: `stdio` (para comunicación con cliente MCP)
+The server will start on:
+- HTTP: `:8080` (for agent communication)
+- MCP: `stdio` (for MCP client communication)
 
-### Despliegue de Agentes
+### Agent Deployment
 
-1. Generar un token de despliegue:
+1. Generate a deployment token:
 ```bash
-# A través del cliente MCP
-generate_deployment_token notes="Despliegue de producción" duration="7d" max_uses=5
+generate_deployment_token notes="Production deployment" duration="7d" max_uses=5
 ```
 
-2. Compilar el agente:
+2. Compile the agent:
 ```bash
-# Windows
 ./client/deploy.bat -Token "DEPLOY-xxxxxxxxxxxxx"
-
-# Linux
-./client/deploy.sh --token "DEPLOY-xxxxxxxxxxxxx"
 ```
 
-## 🎮 Uso
+## Usage
 
-### Comandos MCP
+### MCP Commands
 
-El framework NeuronC2 expone las siguientes herramientas MCP:
+The NeuronC2 framework exposes the following MCP tools:
 
-#### Gestión de Agentes
-- `list_agents` - Listar todos los agentes conectados
-- `list_all_agents` - Listar todos los agentes (conectados y desconectados)
-- `get_agent_info` - Obtener información detallada sobre un agente específico
-- `send_command` - Enviar un comando a un agente
+#### Agent Management
+- `list_agents` - List all connected agents
+- `list_all_agents` - List all agents (connected and disconnected)
+- `get_agent_info` - Get detailed information about a specific agent
+- `send_command` - Send a command to an agent
 
-#### Gestión de Tokens
-- `generate_deployment_token` - Generar un nuevo token de despliegue
-- `list_tokens` - Listar todos los tokens de despliegue
-- `revoke_token` - Revocar un token de despliegue
+#### Token Management
+- `generate_deployment_token` - Generate a new deployment token
+- `list_tokens` - List all deployment tokens
+- `revoke_token` - Revoke a deployment token
 
-#### Comandos del Sistema
-- `get_system_info` - Recopilar información del sistema de un agente
-- `capture_screen` - Capturar una imagen de la pantalla de un agente
-- `list_processes` - Listar procesos en ejecución en un agente
+#### System Commands
+- `get_system_info` - Gather system information from an agent
+- `list_processes` - List running processes on an agent
 
-#### Operaciones de Base de Datos
-- `get_database_stats` - Obtener estadísticas de la base de datos
-- `get_command_history` - Obtener historial de comandos para un agente
+#### Database Operations
+- `get_database_stats` - Get database statistics
+- `get_command_history` - Get command history for an agent
 
-### Ejemplo de Uso
+### Usage Example
 
 ```python
-# Generar un token de despliegue
+# Generate a deployment token
 mcp.generate_deployment_token(
-    notes="Despliegue de producción",
+    notes="Production deployment",
     duration="7d",
     max_uses=5
 )
 
-# Listar agentes conectados
+# List connected agents
 agents = mcp.list_agents()
 
-# Enviar un comando a un agente
+# Send a command to an agent
 result = mcp.send_command(
     agent_id="agent-abc123",
     command="whoami"
 )
-
-# Capturar una pantalla
-screenshot = mcp.capture_screen(agent_id="agent-abc123")
 ```
 
-## 🔒 Características de Seguridad
+## Security Features
 
-### Flujo de Autenticación
+### Authentication Flow
 
-1. **Generación de Tokens**: El administrador genera tokens de despliegue con restricciones específicas
-2. **Activación del Agente**: El agente usa el token para activarse y recibir credenciales API
-3. **Comunicación Segura**: Toda la comunicación del agente usa autenticación con clave API
-4. **Expiración de Tokens**: Los tokens tienen límites configurables de expiración y usos
+1. **Token Generation**: Administrator generates deployment tokens with specific restrictions
+2. **Agent Activation**: Agent uses token to activate and receive API credentials
+3. **Secure Communication**: All agent communication uses API key authentication
+4. **Token Expiration**: Tokens have configurable expiration and usage limits
 
-### Mejores Prácticas
+### Best Practices
 
-- 🔐 Utilizar siempre HTTPS en producción
-- 🔑 Rotar claves API regularmente
-- 📝 Monitorear el historial de comandos en busca de actividades sospechosas
-- ⏰ Establecer tiempos de expiración adecuados para los tokens
-- 🛡️ Implementar segmentación de red
+- Always use HTTPS in production
+- Rotate API keys regularly
+- Monitor command history for suspicious activities
+- Set appropriate expiration times for tokens
+- Implement network segmentation
 
-## 📊 Esquema de Base de Datos
+## Database Schema
 
 ```sql
--- Tokens de despliegue
+-- Deployment tokens
 CREATE TABLE deployment_tokens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     token TEXT UNIQUE NOT NULL,
@@ -248,7 +233,7 @@ CREATE TABLE deployment_tokens (
     notes TEXT
 );
 
--- Agentes
+-- Agents
 CREATE TABLE agents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     agent_id TEXT UNIQUE NOT NULL,
@@ -261,7 +246,7 @@ CREATE TABLE agents (
     last_seen DATETIME NOT NULL
 );
 
--- Historial de comandos
+-- Command history
 CREATE TABLE command_history (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     agent_id TEXT NOT NULL,
@@ -272,26 +257,25 @@ CREATE TABLE command_history (
 );
 ```
 
-## 🔧 Configuración
+## Configuration
 
-### Variables de Entorno
+### Environment Variables
 
-| Variable | Descripción | Valor Predeterminado |
+| Variable | Description | Default Value |
 |----------|-------------|---------|
-| `SERVER_NAME` | Nombre del servidor | `NeuronC2` |
-| `SERVER_VERSION` | Versión del servidor | `1.0.0` |
-| `DATABASE_PATH` | Ruta de la base de datos SQLite | `./c2_database.db` |
-| `SCREENSHOT_DIR` | Directorio de almacenamiento de capturas | `screenshots` |
-| `PORT` | Puerto del servidor HTTP | `:8080` |
+| `SERVER_NAME` | Server name | `NeuronC2` |
+| `SERVER_VERSION` | Server version | `1.0.0` |
+| `DATABASE_PATH` | SQLite database path | `./c2_database.db` |
+| `PORT` | HTTP server port | `:8080` |
 
-## 📚 Referencia de API
+## API Reference
 
-### Endpoints HTTP
+### HTTP Endpoints
 
 #### `POST /activate`
-Activar un nuevo agente con un token de despliegue.
+Activate a new agent with a deployment token.
 
-**Solicitud:**
+**Request:**
 ```json
 {
   "token": "DEPLOY-xxxxxxxxxxxxx",
@@ -304,7 +288,7 @@ Activar un nuevo agente con un token de despliegue.
 }
 ```
 
-**Respuesta:**
+**Response:**
 ```json
 {
   "agent_id": "agent-abc123",
@@ -314,100 +298,36 @@ Activar un nuevo agente con un token de despliegue.
 ```
 
 #### `WS /agent`
-Endpoint WebSocket para comunicación con agentes.
+WebSocket endpoint for agent communication.
 
-**Cabeceras:**
-- `X-API-Key`: Clave API del agente
+**Headers:**
+- `X-API-Key`: Agent API key
 
-## 🚀 Despliegue
+## Roadmap
 
-### Despliegue con Docker
+### Future Enhancements
+- Improve communication security
+- Implement real-time monitoring dashboard
+- Add advanced search capabilities in command history
+- Develop responsive web interface
+- Implement automatic update system
 
-```dockerfile
-FROM golang:1.24-alpine AS builder
-WORKDIR /app
-COPY . .
-RUN go build -o neuronc2 ./cmd/neuronc2/main.go
 
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /app/neuronc2 .
-EXPOSE 8080
-CMD ["./neuronc2"]
-```
 
-```bash
-docker build -t neuronc2 .
-docker run -p 8080:8080 neuronc2
-```
+## License
 
-### Despliegue en Kubernetes
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: neuronc2
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: neuronc2
-  template:
-    metadata:
-      labels:
-        app: neuronc2
-    spec:
-      containers:
-      - name: neuronc2
-        image: neuronc2:latest
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - name: data
-          mountPath: /app/data
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: neuronc2-data
-```
+## Legal Notice
 
-## 📝 Tareas Pendientes y Mejoras Futuras
+This tool is for educational purposes and authorized testing only. Users are responsible for complying with applicable laws and regulations. The authors assume no responsibility for misuse or damage caused by this software.
 
-### Tareas Pendientes
-- 🔧 Reparar la funcionalidad de captura de pantalla
+## Acknowledgments
 
-### Mejoras Futuras
-- 🖥️ Agregar soporte para agentes Linux
-- 🔒 Mejorar la seguridad en las comunicaciones
-- 📊 Implementar dashboard de monitoreo en tiempo real
-- 🔍 Agregar capacidades de búsqueda avanzada en el historial de comandos
-- 📱 Desarrollar interfaz web responsive
-- 🔄 Implementar sistema de actualizaciones automáticas
-
-## 🤝 Contribuciones
-
-1. Haz un fork del repositorio
-2. Crea tu rama de características (`git checkout -b feature/CaracteristicaIncreible`)
-3. Haz commit de tus cambios (`git commit -m 'Añadir alguna CaracteristicaIncreible'`)
-4. Haz push a la rama (`git push origin feature/CaracteristicaIncreible`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.
-
-## ⚠️ Aviso Legal
-
-Esta herramienta es solo para fines educativos y pruebas autorizadas. Los usuarios son responsables de cumplir con las leyes y regulaciones aplicables. Los autores no asumen ninguna responsabilidad por el mal uso o daños causados por este software.
-
-## 🙏 Agradecimientos
-
-- [Protocolo de Contexto de Modelo (MCP)](https://github.com/mark3labs/mcp-go) por Mark3Labs
+- [Model Context Protocol (MCP)](https://github.com/mark3labs/mcp-go) by Mark3Labs
 - [Gorilla WebSocket](https://github.com/gorilla/websocket)
-- [Biblioteca de capturas de pantalla](https://github.com/kbinani/screenshot)
 - [SQLite](https://www.sqlite.org/)
 
 ---
 
-<p align="center">Desarrollado con ❤️ por 3xploit666</p>
+<p align="center">Developed by 3xploit666</p>
