@@ -1,40 +1,37 @@
-# NeuronC2 Framework
+<div align="center">
 
-<p align="center">
-  <img src="assets/logo.png" alt="NeuronC2 Logo" width="600">
-</p>
-<p align="center">
-  <strong>Advanced Command and Control Framework powered by Model Context Protocol</strong>
-</p>
+# NeuronC2
 
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#usage">Usage</a> •
-  <a href="#api">API</a> •
-  <a href="#security">Security</a> •
-  <a href="#contributing">Contributing</a>
-</p>
+**Advanced Command & Control Framework powered by Model Context Protocol**
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Go-1.24+-00ADD8?style=for-the-badge&logo=go" alt="Go Version">
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/Platform-Windows-lightgrey?style=for-the-badge" alt="Platform">
-</p>
+<img src="assets/logo.png" alt="NeuronC2 Logo" width="600">
+
+[![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://go.dev/)
+[![MCP](https://img.shields.io/badge/MCP-Protocol-blueviolet?style=for-the-badge)](https://modelcontextprotocol.io/)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://www.microsoft.com/windows)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+[Features](#features) · [Architecture](#architecture) · [Installation](#installation) · [Usage](#usage) · [API](#api-reference) · [Security](#security-features)
+
+</div>
 
 ---
 
+## Overview
+
+NeuronC2 is a Command & Control framework that integrates with the **Model Context Protocol (MCP)**, enabling AI-powered agent management through natural language. Control agents, execute commands, capture screenshots, and manage deployments — all through your MCP-compatible AI client.
+
 ## Features
 
-- **Model Context Protocol (MCP) Integration**: Seamless agent control through AI interfaces
-- **Secure Authentication**: Token-based deployment and API key authentication
-- **SQLite Database**: Persistent storage for agents, commands, and deployment tokens
-- **Windows Support**: Currently supports Windows agents exclusively
-- **System Information**: Comprehensive system information gathering
-- **WebSocket Communication**: Real-time bidirectional communication
-- **Command History**: Complete logging of all executed commands
-- **Token Management**: Granular control over deployment tokens
+| Feature | Description |
+|---------|-------------|
+| **MCP Integration** | Full agent control through AI interfaces (Claude, etc.) |
+| **Token Auth** | Deployment tokens with expiration and usage limits |
+| **WebSocket Comms** | Real-time bidirectional agent communication |
+| **SQLite Storage** | Persistent storage for agents, commands, and tokens |
+| **Screenshot Capture** | Remote desktop capture with compression |
+| **Command History** | Complete audit trail of all executed commands |
+| **Windows Agent** | Native Windows agent with auto-reconnect |
 
 ## Architecture
 
@@ -44,25 +41,15 @@ graph TD
     B -->|HTTP/WebSocket| C[Agent]
     B -->|SQLite| D[Database]
     
-    subgraph "NeuronC2 Server"
-        B1[MCP Handler]
-        B2[HTTP Server]
-        B3[WebSocket Manager]
-        B4[Database Manager]
+    subgraph Server
+        B1[MCP Handler] --> B2[HTTP Server]
+        B2 --> B3[WebSocket Manager]
+        B3 --> B4[Database Manager]
     end
     
-    subgraph "Project Structure"
-        E1[cmd/neuronc2] -->|Main| B
-        E2[internal] -->|Implementations| B
-        E3[pkg/models] -->|Exportable Models| B
-        E4[client] -->|Client & Tools| A
-        E5[config] -->|Configuration| B
-    end
-    
-    subgraph "Agent"
-        C1[Activation Module]
-        C2[Command Executor]
-        C4[Info Collector]
+    subgraph Agent
+        C1[Activation] --> C2[Command Executor]
+        C2 --> C3[Screenshot Capture]
     end
 ```
 
@@ -70,119 +57,91 @@ graph TD
 
 ```
 neuronc2/
-├── assets/               # Static resources (logos, images)
-├── client/               # Client and deployment tools
-│   ├── client.go         # Client implementation
-│   └── deploy.bat        # Windows deployment script
-├── cmd/
-│   └── neuronc2/         # Main entry point
-│       ├── main.go       # Main file
-│       └── c2_database.db # SQLite database
+├── client/               # Agent implementation
+│   ├── client.go         # Windows agent with WebSocket reconnect
+│   ├── deploy.bat        # Windows deployment script
+│   └── deploy.sh         # Linux deployment script
+├── cmd/neuronc2/         # Server entry point
+│   └── main.go           # HTTP + MCP server bootstrap
 ├── config/
-│   └── config.go         # Project configuration
-├── internal/             # Internal implementations
-│   ├── agent/            # Agent logic
-│   ├── auth/             # Authentication
-│   ├── database/         # Data access layer
-│   ├── mcptools/         # MCP tools
-│   ├── server/           # Server implementation
-│   └── utils/            # Utilities
-├── pkg/
-│   └── models/           # Exportable data models
-├── example/              # Usage examples
-├── go.mod                # Project dependencies
-└── go.sum                # Dependency checksums
+│   └── config.go         # Environment-based configuration
+├── internal/
+│   ├── agent/            # Agent session management
+│   ├── auth/             # Token authentication
+│   ├── database/         # SQLite data access layer
+│   ├── mcptools/         # MCP tool definitions
+│   ├── server/           # HTTP/WebSocket server
+│   └── utils/            # Shared utilities
+├── pkg/models/           # Exportable data models
+└── assets/               # Logo and images
 ```
+
+## Requirements
+
+- **Go** 1.24+
+- **SQLite3**
+- **Windows** (agent target)
+
+## Installation
+
+### Server
+
+```bash
+git clone https://github.com/3xploit666/neuronc2.1.git
+cd neuronc2.1
+go mod download
+go build -o neuronc2 ./cmd/neuronc2/main.go
+./neuronc2
+```
+
+The server starts on:
+- **HTTP** `:8080` — agent communication
+- **MCP** `stdio` — AI client integration
 
 ### MCP Configuration
 
-Create an MCP configuration file (e.g., `claude-desktop.json`):
+Add to your MCP client config (e.g., `claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
-    "c2_server": {
-      "command": "insert you path binary c2"
+    "neuronc2": {
+      "command": "/path/to/neuronc2"
     }
   }
 }
 ```
 
-Replace `"insert you path binary c2"` with the full path to the C2 server binary.
-
-## Requirements
-
-- Go 1.24 or higher
-- SQLite3
-- PowerShell
-
-## Installation
-
-### Server Setup
-
-1. Clone the repository:
-```bash
-git clone https://github.com/3xploit666/neuronc2.1.git
-cd neuronc2
-```
-
-2. Install dependencies:
-```bash
-go mod download
-```
-
-3. Build the server:
-```bash
-go build -o neuronc2.1 ./cmd/neuronc2.1/main.go
-```
-
-4. Run the server:
-```bash
-./neuronc2.1
-```
-
-The server will start on:
-- HTTP: `:8080` (for agent communication)
-- MCP: `stdio` (for MCP client communication)
-
 ### Agent Deployment
 
-1. Generate a deployment token:
-```bash
-generate_deployment_token notes="Production deployment" duration="7d" max_uses=5
-```
-
+1. Generate a deployment token via MCP
 2. Compile the agent:
+
 ```bash
-./client/deploy.bat -Token "DEPLOY-xxxxxxxxxxxxx"
+# Windows
+cd client && deploy.bat -Token "DEPLOY-xxxxxxxxxxxxx"
 ```
 
 ## Usage
 
-### MCP Commands
+### MCP Tools
 
-The NeuronC2 framework exposes the following MCP tools:
+| Category | Tool | Description |
+|----------|------|-------------|
+| **Agents** | `list_agents` | List connected agents |
+| | `list_all_agents` | List all agents (connected + offline) |
+| | `get_agent_info` | Detailed agent information |
+| | `send_command` | Execute command on agent |
+| **Tokens** | `generate_deployment_token` | Create deployment token |
+| | `list_tokens` | List all tokens |
+| | `revoke_token` | Revoke a token |
+| **System** | `get_system_info` | Agent system information |
+| | `list_processes` | Running processes |
+| | `screenshot` | Capture remote desktop |
+| **Database** | `get_database_stats` | Storage statistics |
+| | `get_command_history` | Command audit log |
 
-#### Agent Management
-- `list_agents` - List all connected agents
-- `list_all_agents` - List all agents (connected and disconnected)
-- `get_agent_info` - Get detailed information about a specific agent
-- `send_command` - Send a command to an agent
-
-#### Token Management
-- `generate_deployment_token` - Generate a new deployment token
-- `list_tokens` - List all deployment tokens
-- `revoke_token` - Revoke a deployment token
-
-#### System Commands
-- `get_system_info` - Gather system information from an agent
-- `list_processes` - List running processes on an agent
-
-#### Database Operations
-- `get_database_stats` - Get database statistics
-- `get_command_history` - Get command history for an agent
-
-### Usage Example
+### Example
 
 ```python
 # Generate a deployment token
@@ -195,7 +154,7 @@ mcp.generate_deployment_token(
 # List connected agents
 agents = mcp.list_agents()
 
-# Send a command to an agent
+# Execute command on agent
 result = mcp.send_command(
     agent_id="agent-abc123",
     command="whoami"
@@ -206,77 +165,40 @@ result = mcp.send_command(
 
 ### Authentication Flow
 
-1. **Token Generation**: Administrator generates deployment tokens with specific restrictions
-2. **Agent Activation**: Agent uses token to activate and receive API credentials
-3. **Secure Communication**: All agent communication uses API key authentication
-4. **Token Expiration**: Tokens have configurable expiration and usage limits
+```
+1. Admin generates deployment token (with expiry + max uses)
+2. Agent activates with token → receives unique API key
+3. All communication authenticated via X-API-Key header
+4. Tokens auto-expire and track usage count
+```
 
 ### Best Practices
 
-- Always use HTTPS in production
-- Rotate API keys regularly
-- Monitor command history for suspicious activities
-- Set appropriate expiration times for tokens
-- Implement network segmentation
-
-## Database Schema
-
-```sql
--- Deployment tokens
-CREATE TABLE deployment_tokens (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token TEXT UNIQUE NOT NULL,
-    valid_until DATETIME NOT NULL,
-    max_uses INTEGER NOT NULL,
-    used_count INTEGER DEFAULT 0,
-    created_at DATETIME NOT NULL,
-    notes TEXT
-);
-
--- Agents
-CREATE TABLE agents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    agent_id TEXT UNIQUE NOT NULL,
-    api_key TEXT UNIQUE NOT NULL,
-    hostname TEXT,
-    username TEXT,
-    os TEXT,
-    arch TEXT,
-    activated_at DATETIME NOT NULL,
-    last_seen DATETIME NOT NULL
-);
-
--- Command history
-CREATE TABLE command_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    agent_id TEXT NOT NULL,
-    command TEXT,
-    response TEXT,
-    executed_at DATETIME NOT NULL,
-    FOREIGN KEY(agent_id) REFERENCES agents(agent_id)
-);
-```
+- Use **HTTPS** in production (reverse proxy with TLS)
+- **Rotate API keys** regularly
+- Set short **token expiration** times
+- Monitor **command history** for anomalies
+- Deploy behind **network segmentation**
 
 ## Configuration
 
-### Environment Variables
-
-| Variable | Description | Default Value |
+| Variable | Description | Default |
 |----------|-------------|---------|
-| `SERVER_NAME` | Server name | `NeuronC2` |
-| `SERVER_VERSION` | Server version | `1.0.0` |
+| `SERVER_NAME` | Server identifier | `NeuronC2` |
+| `SERVER_VERSION` | Version string | `1.0.0` |
 | `DATABASE_PATH` | SQLite database path | `./c2_database.db` |
 | `PORT` | HTTP server port | `:8080` |
+| `SCREENSHOT_DIR` | Screenshot storage | `screenshots` |
+| `COMMAND_TIMEOUT` | Execution timeout | `30s` |
 
 ## API Reference
 
-### HTTP Endpoints
+### `POST /activate`
 
-#### `POST /activate`
 Activate a new agent with a deployment token.
 
-**Request:**
 ```json
+// Request
 {
   "token": "DEPLOY-xxxxxxxxxxxxx",
   "metadata": {
@@ -286,48 +208,39 @@ Activate a new agent with a deployment token.
     "arch": "amd64"
   }
 }
-```
 
-**Response:**
-```json
+// Response
 {
   "agent_id": "agent-abc123",
-  "api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   "status": "activated"
 }
 ```
 
-#### `WS /agent`
-WebSocket endpoint for agent communication.
+### `WS /agent`
 
-**Headers:**
-- `X-API-Key`: Agent API key
+WebSocket endpoint for agent communication. Requires `X-API-Key` header.
 
 ## Roadmap
 
-### Future Enhancements
-- Improve communication security
-- Implement real-time monitoring dashboard
-- Add advanced search capabilities in command history
-- Develop responsive web interface
-- Implement automatic update system
+- [ ] Encrypted communications (TLS/mTLS)
+- [ ] Web monitoring dashboard
+- [ ] Advanced command history search
+- [ ] Automatic agent update system
+- [ ] Linux/macOS agent support
 
+## Legal Disclaimer
 
+> **This tool is for educational purposes and authorized testing only.** Users are responsible for complying with applicable laws. The author assumes no responsibility for misuse or damage caused by this software.
 
-## License
+## Author
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Legal Notice
-
-This tool is for educational purposes and authorized testing only. Users are responsible for complying with applicable laws and regulations. The authors assume no responsibility for misuse or damage caused by this software.
-
-## Acknowledgments
-
-- [Model Context Protocol (MCP)](https://github.com/mark3labs/mcp-go) by Mark3Labs
-- [Gorilla WebSocket](https://github.com/gorilla/websocket)
-- [SQLite](https://www.sqlite.org/)
+**[@3xploit666](https://github.com/3xploit666)** · [Blog](https://www.3xploitdev.com/)
 
 ---
 
-<p align="center">Developed by 3xploit666</p>
+<div align="center">
+
+*For educational and authorized security testing purposes only.*
+
+</div>
